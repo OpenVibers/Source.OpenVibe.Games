@@ -16,12 +16,12 @@ jobs:
       with:
         fetch-depth: 0
     
+    # No base/head inputs: the action derives them from the event. A scheduled
+    # run has no commit range, and pinning base to main made base == HEAD there.
     - name: TruffleHog Secret Scan
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
-        base: ${{ github.event.repository.default_branch }}
-        head: HEAD
         extra_args: --debug --json
 
   dependency-check:
@@ -34,4 +34,5 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: --severity-threshold=high
+        # The repository root has no manifest; scan the app manifests in the tree.
+        args: --all-projects --severity-threshold=high
