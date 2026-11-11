@@ -26,13 +26,23 @@ jobs:
 
   dependency-check:
     runs-on: ubuntu-latest
+    # Snyk needs SNYK_TOKEN, and this repository has none: the Snyk step authenticates only when the
+    # owner has set the secret, and npm audit scans the same production manifests otherwise. Neither
+    # path is skipped on a finding.
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Run Snyk
+      if: env.SNYK_TOKEN != ''
       uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         # The repository root has no manifest; scan the app manifests in the tree.
         args: --all-projects --severity-threshold=high
+
+    - name: Run npm audit (production dependencies)
+      if: env.SNYK_TOKEN == ''
+      run: |
+        npm audit --omit=dev --audit-level=high --prefix backend
+        npm audit --omit=dev --audit-level=high --prefix launcher
