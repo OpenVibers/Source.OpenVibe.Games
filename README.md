@@ -2,7 +2,7 @@
 
 Linux-first Source SDK 2013 multiplayer project for **OpenVibe: Source**.
 
-- Public identity: `OpenVibe.Games`
+- Public identity: `OpenVibe.Games` — [openvibe.games](https://openvibe.games)
 - Source mod folder: `game/openvibe.games`
 - Backend/API: `backend/`
 - Tracked OpenVibe C++ patch sources: `sdk/openvibe/`
